@@ -13,7 +13,7 @@ import {
 const Start = ({ navigation }) => {
   const [name, setName] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
-  const image = require('../img/Background_Image.png');
+  const image = require('../img/Background_Image.jpg');
   const icon = require('../img/icon.png');
 
   const handleColorSelection = (color) => {
@@ -33,7 +33,7 @@ const Start = ({ navigation }) => {
               value={name}
               onChangeText={setName}
               placeholder="Your name"
-              placeholderTextColor="#757083"
+              placeholderTextColor="#9b53ff"
             />
           </View>
 
@@ -54,31 +54,31 @@ const Start = ({ navigation }) => {
               style={[
                 styles.colorButton,
                 {
-                  backgroundColor: '#474056',
-                  opacity: selectedColor === '#474056' ? 1 : 0.7,
+                  backgroundColor: '#5204bd',
+                  opacity: selectedColor === '#5204bd' ? 1 : 0.7,
                 },
               ]}
-              onPress={() => handleColorSelection('#474056')}
+              onPress={() => handleColorSelection('#5204bd')}
             />
             <TouchableOpacity
               style={[
                 styles.colorButton,
                 {
-                  backgroundColor: '#8A95A5',
-                  opacity: selectedColor === '#8A95A5' ? 1 : 0.7,
+                  backgroundColor: '#c399fe',
+                  opacity: selectedColor === '#c399fe' ? 1 : 0.7,
                 },
               ]}
-              onPress={() => handleColorSelection('#8A95A5')}
+              onPress={() => handleColorSelection('#c399fe')}
             />
             <TouchableOpacity
               style={[
                 styles.colorButton,
                 {
-                  backgroundColor: '#B9C6AE',
-                  opacity: selectedColor === '#B9C6AE' ? 1 : 0.7,
+                  backgroundColor: '#ddc5fd',
+                  opacity: selectedColor === '#ddc5fd' ? 1 : 0.7,
                 },
               ]}
-              onPress={() => handleColorSelection('#B9C6AE')}
+              onPress={() => handleColorSelection('#ddc5fd')}
             />
           </View>
 
@@ -86,7 +86,7 @@ const Start = ({ navigation }) => {
             title="Start Chatting"
             onPress={() => navigation.navigate('Chat', {name: name, backgroundColor: selectedColor})}
             style={styles.buttonStartChatting}
-            color="#757083"
+            color="#9b53ff"
           />
         </View>
       </ImageBackground>
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
     fontWeight: '300',
-    color: '#757083',
+    color: '#9b53ff',
   },
   containerWhite: {
     width: '88%',
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#757083',
+    borderColor: '#9b53ff',
     padding: 18,
     marginLeft: 20,
     marginRight: 20,
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   },
   text1: {
     fontSize: 16,
-    color: '#757083',
+    color: '#9b53ff',
     fontWeight: '300',
     opacity: 1,
     marginTop: 10,
@@ -166,14 +166,11 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   buttonStartChatting: {
-    backgroundColor: '#757083',
+    backgroundColor: '#9b53ff',
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginTop: 10,
-  },
-  button: {
-    backgroundColor: '#090C08',
   },
 });
 
