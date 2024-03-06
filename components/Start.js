@@ -54,11 +54,11 @@ const Start = ({ navigation }) => {
               style={[
                 styles.colorButton,
                 {
-                  backgroundColor: '#5204bd',
-                  opacity: selectedColor === '#5204bd' ? 1 : 0.7,
+                  backgroundColor: '#1d063d',
+                  opacity: selectedColor === '#1d063d' ? 1 : 0.7,
                 },
               ]}
-              onPress={() => handleColorSelection('#5204bd')}
+              onPress={() => handleColorSelection('#1d063d')}
             />
             <TouchableOpacity
               style={[
