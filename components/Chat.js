@@ -2,15 +2,21 @@ import { useState, useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Platform, KeyboardAvoidingView } from 'react-native';
 import { Bubble, GiftedChat } from 'react-native-gifted-chat';
+import {
+  addDoc,
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+} from 'firebase/firestore';
 
-const Chat = ({ route, navigation }) => {
+const Chat = ({ route, navigation, db }) => {
   const { name, backgroundColor } = route.params;
   const [messages, setMessages] = useState([]);
 
   const onSend = (newMessages) => {
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, newMessages)
-    );
+    // setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages))
+    addDoc(collection(db, 'messages'), newMessages[0]);
   };
 
   const renderBubble = (props) => {
@@ -56,14 +62,18 @@ const Chat = ({ route, navigation }) => {
   const renderDay = (props) => {
     const { currentMessage, previousMessage } = props;
     const currentDate = new Date(currentMessage.createdAt);
-    const previousDate = previousMessage ? new Date(previousMessage.createdAt) : null;
+    const previousDate = previousMessage
+      ? new Date(previousMessage.createdAt)
+      : null;
 
-    if (!previousDate || !currentDate || currentDate.toDateString() !== previousDate.toDateString()) {
+    if (
+      !previousDate ||
+      !currentDate ||
+      currentDate.toDateString() !== previousDate.toDateString()
+    ) {
       return (
         <View style={styles.dateContainer}>
-          <Text style={styles.dateText}>
-            {currentDate.toDateString()}
-          </Text>
+          <Text style={styles.dateText}>{currentDate.toDateString()}</Text>
         </View>
       );
     }
@@ -75,24 +85,23 @@ const Chat = ({ route, navigation }) => {
     navigation.setOptions({ title: name });
 
     // Messages
-    setMessages([
-      {
-        _id: 1,
-        text: 'Hello developer',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://i.pravatar.cc/300',
-        },
-      },
-      {
-        _id: 2,
-        text: 'This is a system message',
-        createdAt: new Date(),
-        system: true,
-      },
-    ]);
+    const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
+    const message = onSnapshot(q, (documentSnapshot) => {
+      let newMessages = [];
+      documentSnapshot.forEach((doc) => {
+        newMessages.push({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: new Date(doc.data().createdAt.toMillis()),
+        });
+      });
+      setMessages(newMessages);
+    });
+
+    // Clean up code
+    return () => {
+      if (message) message();
+    };
   }, []);
 
   return (
@@ -102,7 +111,8 @@ const Chat = ({ route, navigation }) => {
         renderBubble={renderBubble}
         onSend={(messages) => onSend(messages)}
         user={{
-          _id: 1,
+          _id: route.params.id,
+          name
         }}
         renderSystemMessage={renderSystemMessage}
         renderDay={renderDay}
