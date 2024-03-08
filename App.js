@@ -1,20 +1,26 @@
 // import the screens
 import Start from './components/Start';
 import Chat from './components/Chat';
-import { LogBox } from "react-native";
 // import react Navigation
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // firebase
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import {
+  disableNetwork,
+  enableNetwork,
+  getFirestore,
+} from 'firebase/firestore';
+import { useEffect } from 'react';
+import { LogBox, Alert } from 'react-native';
+import { useNetInfo } from '@react-native-community/netinfo';
 
 // Create the navigator
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-  LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
-  
+  LogBox.ignoreLogs(['AsyncStorage has been extracted from']);
+
   const firebaseConfig = {
     apiKey: 'AIzaSyC-u-xrtBOxeXhsMuuNFJDoYX9JUHy7rcE',
 
@@ -28,6 +34,18 @@ const App = () => {
 
     appId: '1:866997746753:web:4fc2f892ffdee8ab4e9ac0',
   };
+
+  //connection status
+  const connectionStatus = useNetInfo();
+  //if user is not connected to the internet, disable trying to connect to the database
+  useEffect(() => {
+    if (connectionStatus.isConnected === false) {
+      Alert.alert('Connection Lost!');
+      disableNetwork(db);
+    } else if (connectionStatus.isConnected === true) {
+      enableNetwork(db);
+    }
+  }, [connectionStatus.isConnected]);
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
@@ -43,7 +61,13 @@ const App = () => {
           name="Chat"
           options={({ route }) => ({ title: route.params.name })}
         >
-          {(props) => <Chat {...props} db={db} />}
+          {(props) => (
+            <Chat
+              db={db}
+              isConnected={connectionStatus.isConnected}
+              {...props}
+            />
+          )}{' '}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
