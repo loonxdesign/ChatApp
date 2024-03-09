@@ -14,6 +14,8 @@ The "Chat App" project is a mobile messaging application created with React Nati
 
 # Project dependencies
 
+• React
+
 • React Native -- Gifted Chat, Navigation, AsyncStorage, Stack Navigator, Maps
 
 • Expo
