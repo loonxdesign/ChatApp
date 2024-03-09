@@ -11,15 +11,17 @@ import {
   enableNetwork,
   getFirestore,
 } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 import { useEffect } from 'react';
 import { LogBox, Alert } from 'react-native';
 import { useNetInfo } from '@react-native-community/netinfo';
+
+LogBox.ignoreLogs(['AsyncStorage has been extracted from']);
 
 // Create the navigator
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-  LogBox.ignoreLogs(['AsyncStorage has been extracted from']);
 
   const firebaseConfig = {
     apiKey: 'AIzaSyC-u-xrtBOxeXhsMuuNFJDoYX9JUHy7rcE',
@@ -35,24 +37,26 @@ const App = () => {
     appId: '1:866997746753:web:4fc2f892ffdee8ab4e9ac0',
   };
 
-  //connection status
-  const connectionStatus = useNetInfo();
-  //if user is not connected to the internet, disable trying to connect to the database
-  useEffect(() => {
-    if (connectionStatus.isConnected === false) {
-      Alert.alert('Connection Lost!');
-      disableNetwork(db);
-    } else if (connectionStatus.isConnected === true) {
-      enableNetwork(db);
-    }
-  }, [connectionStatus.isConnected]);
-
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
 
   // Initialize Cloud Firestore and get a reference to the service
   const db = getFirestore(app);
 
+  const storage = getStorage(app);
+
+  //connection status
+ const connectionStatus = useNetInfo();
+ //if user is not connected to the internet, disable trying to connect to the database
+ useEffect(() => {
+   if (connectionStatus.isConnected === false) {
+     Alert.alert('Connection Lost!');
+     disableNetwork(db);
+   } else if (connectionStatus.isConnected === true) {
+     enableNetwork(db);
+   }
+ }, [connectionStatus.isConnected]);
+ 
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Start">
@@ -63,11 +67,12 @@ const App = () => {
         >
           {(props) => (
             <Chat
-              db={db}
               isConnected={connectionStatus.isConnected}
+              db={db}
+              storage={storage}
               {...props}
             />
-          )}{' '}
+          )}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

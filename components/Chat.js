@@ -1,7 +1,12 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { Platform, KeyboardAvoidingView } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Platform,
+  KeyboardAvoidingView,
+  LogBox,
+} from 'react-native';
 import { Bubble, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
 import {
   addDoc,
@@ -10,27 +15,16 @@ import {
   orderBy,
   query,
 } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomActions from './CustomActions';
+import MapView from 'react-native-maps';
 
-const Chat = ({ route, navigation, db, isConnected }) => {
-  const { name, backgroundColor } = route.params;
+LogBox.ignoreLogs(['Cannot connect to Metro', '@firebase/firestore']);
+
+const Chat = ({ route, navigation, db, isConnected, storage }) => {
+  const { userID, name, backgroundColor } = route.params;
   const [messages, setMessages] = useState([]);
 
-  const loadCachedMessages = async () => {
-    const cachedMessages = (await AsyncStorage.getItem('messages')) || '[]';
-    setMessages(JSON.parse(cachedMessages));
-  };
-
-  let unsubMessages;
-
-  const cachedMessages = async (messagesToCache) => {
-    try {
-      await AsyncStorage.setItem('messages', JSON.stringify(messagesToCache));
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
-  
   const onSend = (newMessages) => {
     // setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages))
     addDoc(collection(db, 'messages'), newMessages[0]);
@@ -98,9 +92,46 @@ const Chat = ({ route, navigation, db, isConnected }) => {
   };
 
   const renderInputToolbar = (props) => {
-    if (isConnected) return <InputToolbar {...props} />;
+    if (isConnected) return <InputToolbar style={styles.toolbar} {...props} />;
     else return null;
-   }
+  };
+
+  const renderCustomActions = (props) => {
+    return <CustomActions storage={storage} userID={userID} {...props} />;
+  };
+
+  const renderCustomView = (props) => {
+    const { currentMessage } = props;
+    if (currentMessage.location) {
+      return (
+        <MapView
+          style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
+          region={{
+            latitude: currentMessage.location.latitude,
+            longitude: currentMessage.location.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        />
+      );
+    }
+    return null;
+  };
+
+  const cachedMessages = async (messagesToCache) => {
+    try {
+      await AsyncStorage.setItem('messages', JSON.stringify(messagesToCache));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const loadCachedMessages = async () => {
+    const cachedMessages = (await AsyncStorage.getItem('messages')) || '[]';
+    setMessages(JSON.parse(cachedMessages));
+  };
+
+  let unsubMessages;
 
   useEffect(() => {
     // Username
@@ -140,6 +171,8 @@ const Chat = ({ route, navigation, db, isConnected }) => {
         messages={messages}
         renderBubble={renderBubble}
         renderInputToolbar={renderInputToolbar}
+        renderActions={renderCustomActions}
+        renderCustomView={renderCustomView}
         onSend={(messages) => onSend(messages)}
         user={{
           _id: route.params.id,
@@ -181,6 +214,7 @@ const styles = StyleSheet.create({
     color: '#9b53ff',
     fontWeight: 'bold',
   },
+ 
 });
 
 export default Chat;

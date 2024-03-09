@@ -11,7 +11,6 @@ import {
   Alert,
 } from 'react-native';
 import { getAuth, signInAnonymously } from 'firebase/auth';
-import Chat from './Chat';
 
 const Start = ({ navigation }) => {
   const [name, setName] = useState("");
