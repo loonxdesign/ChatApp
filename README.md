@@ -21,3 +21,5 @@ The "Chat App" project is a mobile messaging application created with React Nati
 • Google Firebase Database & Storage
 
 # Result
+
+![IMG_9240](https://github.com/loonxdesign/ChatApp/assets/67638539/061b255f-810c-4c01-83dd-9c614be7afb5)
