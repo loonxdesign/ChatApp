@@ -25,3 +25,10 @@ The "Chat App" project is a mobile messaging application created with React Nati
 # Result
 
 ![IMG_9240](https://github.com/loonxdesign/ChatApp/assets/67638539/061b255f-810c-4c01-83dd-9c614be7afb5)
+
+
+https://github.com/loonxdesign/ChatApp/assets/67638539/7e5bd14d-845d-46d3-945c-412ce753a519
+
+
+https://github.com/loonxdesign/ChatApp/assets/67638539/574ea645-dbb4-437a-ba5d-191a91eca640
+
